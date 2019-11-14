@@ -1,0 +1,362 @@
+{% extends 'frontend/common/base.html.twig' %}
+ 
+{% block title %}Statystyki gracza :: {{ user.getPlayerName() }}{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/page_profile.css') }}">{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="header-profile">
+                <h5 class="badge">Statystyki gracza :: {{ user.getPlayerName() }}</h5>
+                <div class="select-panel select-panel-table badge">
+                    <select onchange="window.location.href=this.value">
+                        <option disabled selected style="display:none" value="">
+                            {{ stats.getServerId().getName() }}
+                        </option>
+                        {% for server in servers %}
+                            <option value="{{ path('user_stats', {'authData': user.getAuthData(), 'serverName': server.getName() }) }}">
+                                {{ server.getName() }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="left-block">
+            <div class="profile__block">
+                <div class="user-block">
+                    <div class="block">
+                        <a href="https://steamcommunity.com/profiles/{{ user.getAuthData()|toSteamCommunityID }}" target="_blank"><img class="rounded-circle avatar" src="{{ user.getAuthData()|getSteamAvatar('medium') }}"></a>
+                        <div class="name">
+                            <span style="text-shadow: 0px 1px 9px  #FF0000; color:  #FF0000; font-weight: bold;">{{ user.getPlayerName() }}</span>
+                        </div>
+                        <div class="country"> - </div>
+                        <img class="rank-img" src="{{ asset('assets/img/ranks/' ~ stats.getPlayerRank() ~ '.png') }}"/>
+                        <div class="user-stats" style="background: rgba(0,0,0,.2); text-shadow: 0px 1px 9px  #FF0000; color:  #FF0000; font-weight: bold;">Właściciel</div>
+                    </div>
+                </div>
+                <div class="best-weapon-block">
+                    <div class="block">
+                        <ul class="weapons">
+                            {% if weapons|length > 0 %}
+                                {%  if weapons[0] != null %}
+                                    <li>
+                                        <img class="svg" src="{{ asset('assets/img/weapons/weapon_' ~ weapons[0].name ~ '.svg') }}">
+                                        <div class="kills">
+                                            <span>{{ weapons[0].value }}</span>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                                {%  if weapons[1] != null %}
+                                    <li>
+                                        <img class="svg" src="{{ asset('assets/img/weapons/weapon_' ~ weapons[1].name ~ '.svg') }}">
+                                        <div class="kills">
+                                            <span>{{ weapons[1].value }}</span>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                                {%  if weapons[2] != null %}
+                                    <li>
+                                        <img class="svg" src="{{ asset('assets/img/weapons/weapon_' ~ weapons[2].name ~ '.svg') }}">
+                                        <div class="kills">
+                                            <span>{{ weapons[2].value }}</span>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+                        <div class="weapon-table">
+                            <table class="table table-hover fixed_header">
+                                <thead>
+                                    <tr>
+                                        <th class="text-right"></th>
+                                        <th class="text-left">Broń</th>
+                                        <th class="text-center">Zabójstwa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for weapon in weapons %}
+                                        {% if loop.index > 2 %}
+                                            <tr>
+                                                <th class="text-right"><img class="svg" src="{{ asset('assets/img/weapons/weapon_' ~ weapon.name ~ '.svg') }}"></th>
+                                                <th class="text-left">{{ weapon.name }}</th>
+                                                <th class="text-center">{{ weapon.value }} zabójstwa</th>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile__block">
+                <div class="short-stats-block">
+                    <div class="block">
+                        <div class="left-stats-block">
+                            <ul>
+                                <li>Procent Zwycięstw:</li>
+                                <li>K/D Ratio:</li>
+                                <li>Trafienia / Strzały:</li>
+                                <li>Headshoty:</li>
+                                <li>Czas gry:</li>
+                                <li>Ostatnie połączenie:</li>
+                            </ul>
+                        </div>
+                        <div class="right-stats-block">
+                            <ul>
+                                <li><span>{% if stats.getMatchWin()+stats.getMatchDraw()+stats.getMatchLose() >= 1 %}{{ ((stats.getMatchWin()/(stats.getMatchWin()+stats.getMatchDraw()+stats.getMatchLose()))*100)|number_format(2) }}{% else %}0{% endif %}% ({{ stats.getMatchWin() }}/{{ stats.getMatchWin()+stats.getMatchDraw()+stats.getMatchLose() }})</span></li>
+                                <li><span>{% if stats.getDeaths() > 0 %}{{ (stats.getKills() / stats.getDeaths())|number_format(2) }}{% else %}-{% endif %} ( {{ stats.getKills() }} / {{ stats.getDeaths() }})</span></li>
+                                <li><span>{% if stats.getShots() >= 1 %}{{ ((stats.getHits()/(stats.getShots()))*100)|number_format(2) }}%{% else %}-{% endif %} ({{ stats.getHits() }}/{{ stats.getShots() }})</span></li>
+                                <li><span>{{ stats.getHeadshots() }} ( {% if stats.getKills() > 0 %}{{ ((stats.getHeadshots()/stats.getKills())*100)|number_format(2) }}%{% else %}-{% endif %} )</span></li>
+                                <li><span>{{ (user.getLastconnect() - user.getConnected())|getPlayTime }}</span></li>
+                                <li><span>{{ user.getLastconnect()|date('d/m/Y H:i:s') }}</span></li>
+                            </ul>
+                        </div>
+                        <div class="skull-block">
+                            <div class="left-skull-block">
+                                <div class="skull"></div>
+                                <div class="info">
+                                    Dreifacher Kill: <span></span>-
+                                </div>
+                            </div>
+                            <div class="center-skull-block">
+                                <div class="skull"></div>
+                                <div class="info">
+                                    Vierfacher Kill: <span></span>-
+                                </div>
+                            </div>
+                            <div class="right-skull-block">
+                                <div class="skull"></div>
+                                <div class="info">
+                                    Ace <span></span>-
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="middle-block">
+            <div class="profile__block">
+                <div class="best-maps">
+                    <div class="block">
+                        {% if maps|length > 0 %}
+                            <div class="map-top">
+                                <img src="https://image.gametracker.com/images/maps/160x120/csgo/{{ maps[0].getName() }}.jpg">
+                                <div class="map-lower">
+                                    <div class="map-one">
+                                        <span>{{ maps[0].getPlayed() }}</span>
+                                    </div>
+                                    <div class="map-pretty-name">
+                                        <span>{{ maps[0].getName() }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="map-bottom">
+                            <div class="weapon-table">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Mapa</th>
+                                            <th class="text-center">Liczba rozegranych</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if maps|length > 0 %}
+                                            {% for map in maps %}
+                                                <tr>
+                                                    <th class="text-center">{{ map.getName() }}</th>
+                                                    <th class="text-center">{{ map.getPlayed() }}</th>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hitstats-block">
+                    <div class="block">
+                        <img class="back" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/back.jpg') }}">
+                        <div class="hit_player">
+                            <a class="tooltip-top" data-tooltip="Head: {{ stats.getHead() }} ({% if stats.getHits() > 0 %}{{ (stats.getHead()/stats.getHits())*100 }}{% else %}0{% endif %}%)">
+                                <img class="hit_head" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/head.png') }}">
+                            </a>
+                            <img class="hit_neak" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/neck.png') }}">
+                            <a class="tooltip-top" data-tooltip="Left Arm: {{ stats.getLeftArm() }} ({% if stats.getHits() > 0 %}{{ (stats.getLeftArm()/stats.getHits())*100 }}{% else %}0{% endif %}%)">
+                                <img class="hit_left_arm" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/left_arm.png') }}">
+                            </a>
+                            <a class="tooltip-top" data-tooltip="Right Arm: {{ stats.getRightArm() }} ({% if stats.getHits() > 0 %}{{ (stats.getRightArm()/stats.getHits())*100 }}{% else %}0{% endif %}%)">
+                                <img class="hit_right_arm" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/right_arm.png') }}">
+                            </a>
+                            <a class="tooltip-top" data-tooltip="Left Leg: {{ stats.getLeftLeg() }} ({% if stats.getHits() > 0 %}{{ (stats.getLeftLeg()/stats.getHits())*100 }}{% else %}0{% endif %}%)">
+                                <img class="hit_left_leg" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/left_leg.png') }}">
+                            </a>
+                            <a class="tooltip-top" data-tooltip="Right Leg: {{ stats.getRightLeg() }} ({% if stats.getHits() > 0 %}{{ (stats.getRightLeg()/stats.getHits())*100 }}{% else %}0{% endif %}%)">
+                                <img class="hit_right_leg" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/right_leg.png') }}">
+                            </a>
+                            <a class="tooltip-top" data-tooltip="Belly: {{ stats.getStomach() }} ({% if stats.getHits() > 0 %}{{ (stats.getStomach()/stats.getHits())*100 }}{% else %}0{% endif %}%)">
+                                <img class="hit_belly" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/belly.png') }}">
+                            </a>
+                            <a class="tooltip-top" data-tooltip="Chest: {{ stats.getChest() }} ({% if stats.getHits() > 0 %}{{ (stats.getChest()/stats.getHits())*100 }}{% else %}0{% endif %}%)">
+                                <img class="hit_chest" ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/hitstats/chest.png') }}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile__block">
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">{{ stats.getMvp() }}</div>
+                        <div class="unusualkills_text">MVP</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-star zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">{{ stats.getFirstBlood() }}</div>
+                        <div class="unusualkills_text">First Blood</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-fire zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">-</div>
+                        <div class="unusualkills_text">Ninja Defuse</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-shield-check zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">{{ stats.getNoScope() }}</div>
+                        <div class="unusualkills_text">No-Scope</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-circle-o zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">{{ stats.getNoScopeDis() }}m</div>
+                        <div class="unusualkills_text">Najlepszy No-Scope</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-trending-up zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">-</div>
+                        <div class="unusualkills_text">Skany</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-flash zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">-</div>
+                        <div class="unusualkills_text">Fragi na flashu</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-eye-off zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">-</div>
+                        <div class="unusualkills_text">Jumpshoty</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-star-outline zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="unusualkills_block">
+                    <div class="block">
+                        <div class="unusualkills_score">-</div>
+                        <div class="unusualkills_text">Fragi przez smoke</div>
+                        <div class="icon_block">
+                            <i class="zmdi zmdi-cloud zmdi-hc-fw"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-block">
+            <div class="profile__block" style="height: 100%;">
+                <div class="top">
+                    <div class="block">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Pozycja</th>
+                                    <th class="">Nazwa</th>
+                                    <th class="text-center">Punkty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if index-16 <= 0 %} {# get start index #}
+                                    {% set position = 1 %}
+                                {% else %}
+                                    {% set position = index-16 %}
+                                {% endif %}
+
+                                {% set added = 0 %} {# get added rows count #}
+
+                                {% for user in users %}
+                                    {% if position >= 1 and loop.index == position and loop.index < index %}
+                                        <tr class="pointer" onclick="location.href = '{{ path('user_stats', {'authData': user.getPlayerId().getAuthData(), 'serverName': user.getServerId().getName() }) }}';">
+                                            <th class="text-center">{{ position }}</th>
+                                            <th class="table-text">{{ user.getPlayerId().getPlayerName() }}</th>
+                                            <th class="text-center">{{ user.getScore() }}</th>
+                                        </tr>
+                                        {% set added = added + 1 %}
+                                        {% set position = position + 1 %} {# increment position #}
+                                    {% endif %}
+                                {% endfor %}
+
+                                <tr class="pointer table-active" onclick="location.href = '{{ path('user_stats', {'authData': users[index-1].getPlayerId().getAuthData(), 'serverName': users[index-1].getServerId().getName() }) }}';">
+                                    <th class="text-center">{{ index }}</th>
+                                    <th class="table-text">{{ users[index-1].getPlayerId().getPlayerName() }}</th>
+                                    <th class="text-center">{{ users[index-1].getScore() }}</th>
+                                </tr>
+                                {% set added = added+1 %} {# we added one row mannualy, so.. increment!#}
+                                {% set position = position+1 %} {# we added one row mannualy, so.. increment!#}
+
+                                {% for user in users %}
+                                    {% if added < 17 and loop.index == position %}
+                                        <tr class="pointer" onclick="location.href = '{{ path('user_stats', {'authData': user.getPlayerId().getAuthData(), 'serverName': user.getServerId().getName() }) }}';">
+                                            <th class="text-center">{{ position }}</th>
+                                            <th class="table-text">{{ user.getPlayerId().getPlayerName() }}</th>
+                                            <th class="text-center">{{ user.getScore() }}</th>
+                                        </tr>
+                                        {% set added = added + 1 %}
+                                        {% set position = position + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

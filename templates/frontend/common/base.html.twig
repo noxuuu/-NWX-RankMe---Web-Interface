@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="NWXProject.pl ~ Statystyki graczy!">
+        <meta name="author" content="Patryk Szczepański & M0st1ce">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/form_border.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/badge_type.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/main_stats.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/servers_monitoring.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/material-design-iconic-font.min.css') }}">
+
+        <title>{% block title %}{% endblock %} :: Statystyki graczy</title>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body class="sidebar-collapse">
+        {% include 'frontend/common/widgets/menu.html.twig' %}
+        {% include 'frontend/common/widgets/navbar.html.twig' %}
+
+        <div class="global-container">
+            <div class="container-fluid">
+                {% block body %}{% endblock %}
+
+                <footer class="footer">
+                    2019 &copy; <a>NOX RankMe - Web Interface #0.1b</a> | Template by <a href="https://steamcommunity.com/id/M0st1ce/" target="_blank">M0st1ce</a>
+                    | Realized by <a href="https://nwxstudio.pl" target="_blank">n.o.x</a>
+                    | Powered by <a href="https://symfony.com/" target="_blank">Symfony</a>
+                </footer>
+            </div>
+        </div>
+
+        <script src="{{ asset('assets/js/jquery-3.4.1.min.js') }}"></script>
+        <script src="{{ asset('assets/js/app.js') }}"></script>
+        <script src="{{ asset('assets/js/servers_monitoring.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

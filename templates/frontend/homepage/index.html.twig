@@ -1,0 +1,182 @@
+{% extends 'frontend/common/base.html.twig' %}
+{% block title %}Strona główna{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        {% if servers|length > 0 %}
+            {% for server in servers %}
+                <div class="col-md-6">
+                    <div class="card card-top">
+                        <div class="card-header">
+                            <h5 class="badge">Top 10 Graczy :: {{ server.getName() }}</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-right"></th>
+                                    <th class="text-left">Gracz</th>
+                                    <th class="text-center">Punkty</th>
+                                    <th class="text-center">Ranga</th>
+                                    <th class="text-center">KDR</th>
+                                    <th class="text-center tb-time-two">Czas gry</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% set index = 1 %}
+                                    {% for player in stats %}
+                                        {% if player.getServerId() == server %}
+                                            <tr class="pointer">
+                                                <th class="text-center">{{ index }}</th>
+                                                <th class="text-right"><img class="rounded-circle" src="{{ player.getPlayerId().getAuthData()|getSteamAvatar('small') }}" /></th>
+                                                <th class="text-left tb-name">
+                                                    <a href="{{ path('user_stats', {'authData': player.getPlayerId().getAuthData(), 'serverName': player.getServerId().getName() }) }}">{{ player.getPlayerId().getPlayerName() }}</a>
+                                                </th>
+                                                <th class="text-center">{{ player.getScore() }}</th>
+                                                <th class="text-center"><img src="{{ asset('assets/img/ranks/' ~ player.getPlayerRank() ~ '.png') }}" /></th>
+                                                <th class="text-center">{% if player.getDeaths() > 0 %}{{ (player.getKills() / player.getDeaths())|number_format(2) }}{% else %}-{% endif %}</th>
+                                                <th class="text-center tb-time-two">{{ (player.getPlayerId().getLastconnect() - player.getPlayerId().getConnected())|getPlayTime }}</th>
+                                            </tr>
+                                            {% set index = index + 1 %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-fixed">
+            <div class="card">
+                <div class="card-block-big">
+                    <div class="figure"></div>
+                    <div class="figure_2"></div>
+                    <h3>{{ stats_boxes.players_all }}</h3>
+                    <div class="info">
+                        Wszystkich graczy
+                    </div><i class="icon-stats"><i class="zmdi zmdi-accounts-alt zmdi-hc-fw"></i></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-fixed">
+            <div class="card">
+                <div class="card-block-big">
+                    <div class="figure"></div>
+                    <div class="figure_2"></div>
+                    <h3>{{ stats_boxes.players_24 }}</h3>
+                    <div class="info">
+                        Graczy w ciągu 24h
+                    </div><i class="icon-stats"><i class="zmdi zmdi-star zmdi-hc-fw"></i></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-fixed">
+            <div class="card">
+                <div class="card-block-big">
+                    <div class="figure"></div>
+                    <div class="figure_2"></div>
+                    <h3>{{ stats_boxes.players_headshots }}</h3>
+                    <div class="info">
+                        Headshotów
+                    </div><i class="icon-stats"><i class="zmdi zmdi-fire zmdi-hc-fw"></i></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="row">
+        <div class="col-md-4 mon-1">
+            <div class="card plug">
+                <div class="x_1_invert"></div>
+            </div>
+        </div>
+        <div class="col-md-4 mon-1">
+            <div class="card">
+                <div class="custom-server">
+                    <div class="data-basic">
+                        <div class="data-name" id="server-name-0">
+                            -
+                        </div>
+                        <div class="online">
+                            <div class="online2" id="online_gr-0" style="width:50%"></div>
+                            <div class="value" id="server-players-0">16/32</div>
+                        </div>
+                        <div class="border_ip"></div>
+                        <div class="ip" id="server-ip-0">127.0.0.1:27015</div>
+                        <a class="btn_connect btn_connect_0" href="javascript:void(0);" id="0" onclick="get_players_data(id)">
+                            <i class="icon-connect zmdi zmdi-caret-right-circle zmdi-hc-fw"></i>
+                        </a>
+                    </div>
+                    <img id="server-map-image-0" ondrag="return false" ondragstart="return false" src="https://ocgn.ru/storage/cache/img/maps/730/awp_lego_2.jpg">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mon-1">
+            <div class="card plug">
+                <div class="x_1"></div>
+            </div>
+        </div>
+    </div>-->
+    <div class="row">
+        <div class="col-md-12 mon-2">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="badge">Online Monitoring</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Game</th>
+                            <th class="text-left">Name</th>
+                            <th class="text-center">Players</th>
+                            <th class="text-center">Map</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="pointer str_connect_0" id="0" onclick="get_players_data(id)">
+                            <th class="text-center"><img id="server-tablemod-0" src="storage/cache/img/global/null.png"></th>
+                            <th class="text-left" id="server-tablename-0"></th>
+                            <th class="text-center" id="server-tableplayers-0"></th>
+                            <th class="text-center" id="server-tablemap-0"></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-window-server" id="server-players-online">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="badge">Server Information</h5><a class="modal-close badge" href="javascript:void(0);" onclick="close_modal(id)" title="Закрыть"><i class="zmdi zmdi-close zmdi-hc-fw"></i></a>
+            </div>
+            <div class="server_block_scroll">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Player</th>
+                            <th class="text-center">Points</th>
+                            <th class="text-center">Playtime</th>
+                        </tr>
+                        </thead>
+                        <tbody id="players_online"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="input-form">
+                <a class="btn btn_connect_now" id="connect_server">Join</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

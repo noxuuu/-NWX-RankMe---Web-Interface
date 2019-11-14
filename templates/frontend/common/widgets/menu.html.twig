@@ -1,0 +1,77 @@
+<aside class="main-sidebar offcanvas">
+    <section class="sidebar">
+        <div class="user-sidebar-block">
+            <div class="user-info">
+                <a href="{{ path('homePage') }}">
+                    <img ondrag="return false" ondragstart="return false" src="{{ asset('assets/img/global/default_photo.png') }}">
+                </a>
+                <div class="user-details">
+                    <span style="font-weight: bold; color: #ffffff;">Witaj!</span>
+                    <span><a href="https://nwxproject.pl/">Zajrzyj po więcej</a></span>
+                </div>
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="tooltip-right" data-tooltip="Strona Główna">
+                <a class="table-active" href="{{ path('homePage') }}">
+                    <div class="sidebar-icon">
+                        <i class="zmdi zmdi-home zmdi-hc-fw"></i>
+                    </div>
+                    <div class="item-name">
+                        Strona główna
+                    </div>
+                </a>
+            </li>
+            <li class="tooltip-right" data-tooltip="Statystyki graczy">
+                <a href="#">
+                    <div class="sidebar-icon">
+                        <i class="zmdi zmdi-chart zmdi-hc-fw"></i>
+                    </div>
+                    <div class="item-name">
+                        Statystyki graczy
+                    </div>
+                </a>
+            </li>
+            <li class="tooltip-right" data-tooltip="Serwery">
+                <a href="#">
+                    <div class="sidebar-icon">
+                        <i class="zmdi zmdi-cloud-done zmdi-hc-fw"></i>
+                    </div>
+                    <div class="item-name">
+                        Serwery
+                    </div>
+                </a>
+            </li>
+            <li class="tooltip-right" data-tooltip="Forum">
+                <a href="https://nwxproject.pl/" target="_blank">
+                    <div class="sidebar-icon">
+                        <i class="zmdi zmdi-pin-account zmdi-hc-fw"></i>
+                    </div>
+                    <div class="item-name">
+                        Forum
+                    </div>
+                </a>
+            </li>
+            <li class="tooltip-right" data-tooltip="Sklep 24/7">
+                <a href="https://sklep.nwxproject.pl/" target="_blank">
+                    <div class="sidebar-icon">
+                        <i class="zmdi zmdi-shopping-cart zmdi-hc-fw"></i>
+                    </div>
+                    <div class="item-name">
+                        Sklep 24/7
+                    </div>
+                </a>
+            </li>
+            <li class="tooltip-right" data-tooltip="Steam">
+                <a href="https://steamcommunity.com/" target="_blank">
+                    <div class="sidebar-icon">
+                        <i class="zmdi zmdi-steam-square zmdi-hc-fw"></i>
+                    </div>
+                    <div class="item-name">
+                        Grupa Steam
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </section>
+</aside>
